@@ -10,6 +10,10 @@ namespace Game1
     public class Game1 : Game
     {
         Texture2D textureBall;
+
+        Vector2 ballPosition;
+        float ballSpeed;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         
@@ -28,6 +32,10 @@ namespace Game1
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+
+
+            ballPosition = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 2);
+            ballSpeed = 100f;
 
             base.Initialize();
         }
@@ -66,6 +74,20 @@ namespace Game1
 
             // TODO: Add your update logic here
 
+            var kstate = Keyboard.GetState();
+
+            if (kstate.IsKeyDown(Keys.Up))
+                ballPosition.Y -= ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (kstate.IsKeyDown(Keys.Down))
+                ballPosition.Y += ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (kstate.IsKeyDown(Keys.Left))
+                ballPosition.X -= ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (kstate.IsKeyDown(Keys.Right))
+                ballPosition.X += ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             base.Update(gameTime);
         }
 
@@ -80,7 +102,17 @@ namespace Game1
             // TODO: Add your drawing code here
 
             spriteBatch.Begin();
-            spriteBatch.Draw(textureBall, new Vector2(0, 0), Color.White);
+            //spriteBatch.Draw(textureBall, new Vector2(0, 0), Color.White);
+
+            //spriteBatch.Draw(textureBall, ballPosition, Color.White);  
+
+            //As you can see the ball doesn't seem quite centered yet. This is happening because MonoGame uses (0, 0) 
+            //as the origin point for drawing by default. We can modify this by doing the following:
+
+            spriteBatch.Draw(textureBall, ballPosition, null, Color.White, 0f, new Vector2(textureBall.Width / 2, textureBall.Height / 2),
+                Vector2.One, SpriteEffects.None, 0f );
+
+
             spriteBatch.End();
 
             base.Draw(gameTime);
